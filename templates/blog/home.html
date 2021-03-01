@@ -1,0 +1,126 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+
+<style>
+  li.cat:hover{
+    background-color:#ad75c9;
+
+  }
+  a.title:hover{
+    color: #ad75c9;
+  }
+  
+  .btn-outline-info{
+    border-color:#ad75c9;
+    color: #ad75c9;
+
+  }
+  .btn-outline-info:hover{
+    border-color:#ad75c9;
+    background-color:#eee6f3;
+    color: #ad75c9;
+
+  }
+
+  .btn-info{
+    border-color:#ad75c9;
+    background-color: #ad75c9;
+    
+
+  }
+  .btn-info:hover{
+    border-color:#ad75c9;
+    background-color:#eee6f3;
+    color: #ad75c9;
+  }
+
+  
+</style>
+
+<main role="main" class="container">
+  <div class="row">
+      <div class="col-md-8">
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{message.tags}}" >
+              {{message}}
+            </div>
+          {% endfor %}
+        {% endif%}
+        {% for post in posts %}
+        <article class="media content-section">
+            <img  class="rounded-circle article-img" src="{{post.author.profile.image.url}}" >
+            <div class="media-body">
+              <div class="article-metadata">
+                <a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
+                <small class="text-muted">{{ post.date_posted |date:'F d, Y' }}</small>
+                <small class="text-muted">{{post.category.name}} </small>
+                
+              </div>
+              <h2><a class="article-title title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h2>
+              <p class="article-content">{{ post.content }}</p>
+            </div>
+ 
+        </article>
+        {% endfor %}
+        
+
+        {% if posts.has_previous %}
+          <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+          <a class="btn btn-outline-info mb-4" href="?page={{ posts.previous_page_number }}">Previous</a>
+        {% endif %}
+  
+        {% for num in posts.paginator.page_range %}
+          {% if posts.number == num %}
+            <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+          {% elif num > posts.number|add:'-3' and num < posts.number|add:'3' %}
+            <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+          {% endif %}
+        {% endfor %}
+  
+        {% if posts.has_next %}
+          <a class="btn btn-outline-info mb-4" href="?page={{ posts.next_page_number }}">Next</a>
+          <a class="btn btn-outline-info mb-4" href="?page={{ posts.paginator.num_pages }}">Last</a>
+        {% endif %}
+  
+         
+      </div>
+
+      <div class="col-md-4">
+        <div class="content-section">
+            <h4>Filter what you want to see..</h4>
+            <p class='text-muted'>Categories
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item cat">
+                    <a href="{% url 'blog-home' %}">All</a>
+                </li>
+                {% for category in categories %}
+                <li class=" list-group-item cat">
+                    <a  href="{% url 'blog-home' %}?category={{category.name}}">
+                        {{category.name}}
+                    </a>
+                </li>
+                {% endfor %}
+  
+              </ul>
+            </p>
+        </div>
+      </div>
+  </div>
+   
+</main>  
+
+
+{% endblock content %}
+
+
+
+
+
+
+
+
+
+
+
+
